@@ -69,11 +69,11 @@ class Login extends Component {
       }
     else {
         return (
-          <div className="">
+          <div className="container">
             <div className="row justify-content-left">
               <div className="col-sm-4">
                 <form>
-                  <h3>Login!</h3>
+                  <h2>Login</h2>
                   <div className="form-group">
                     <label htmlFor="username">Username</label>
                     <input
@@ -84,7 +84,6 @@ class Login extends Component {
                       className="form-control"
                       placeholder="Username"
                     />
-                    <small id="usernameHelp" className="form-text text-muted">Enter your username</small>
                   </div>
                   <div className="form-group">
                     <label htmlFor="password">Password</label>

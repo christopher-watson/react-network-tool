@@ -7,7 +7,7 @@ import './App.css';
 
 const App = () => (
   <Router>
-    <div className="container">
+    <div className="main-container">
       <Navbar/>
       <Switch>
         <Route exact path="/" component={Main} />

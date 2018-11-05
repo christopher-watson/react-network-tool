@@ -1,44 +1,45 @@
 import React, { Component } from "react";
 // import { Redirect } from "react-router-dom";
-// import API from "../utils/API";
+import API from "../utils/API";
+import BG from "../components/Images/bg.png";
 
 class Main extends Component {
-  // state = {
-  //   isLoggedIn: true,
-  //   username: "",
-  //   eventCode: "",
-  //   codeInput: "",
-  //   goToEvent: false,
-  //   userNotExist: false,
-  //   eventUsers: []
-  // }
+  state = {
+    isLoggedIn: true,
+    username: "",
+    eventCode: "",
+    codeInput: "",
+    goToEvent: false,
+    // userNotExist: false,
+    eventUsers: []
+  }
 
-  // // Check login status on load
-  // componentDidMount() {
-  //   this.loginCheck();
-  // }
+  // Check login status on load
+  componentDidMount() {
+    this.loginCheck();
+  }
 
-  // // Check login status
-  // loginCheck = () => {
-  //   API
-  //     .loginCheck()
-  //     .then(res => this.setState({
-  //       isLoggedIn: res.data.isLoggedIn, username: res.data.username
-  //     }))
-  //     .catch(err => {
-  //       console.log(err);
-  //       this.setState({isLoggedIn: false})
-  //     })
-  // }
+  // Check login status
+  loginCheck = () => {
+    API
+      .loginCheck()
+      .then(res => this.setState({
+        isLoggedIn: res.data.isLoggedIn, username: res.data.username
+      }))
+      .catch(err => {
+        console.log(err);
+        this.setState({isLoggedIn: false})
+      })
+  }
 
-  // // handle input change for state
-  // handleInputChange = event => {
-  //   console.log(event.target.value);
-  //   const value = event.target.value;
-  //   this.setState({ 
-  //       codeInput: value
-  //   });
-  // };
+  // handle input change for state
+  handleInputChange = event => {
+    console.log(event.target.value);
+    const value = event.target.value;
+    this.setState({ 
+        codeInput: value
+    })
+  }
 
   // // displays newly created event code
   // handleCreateEventSubmit = (event) => {
@@ -97,22 +98,31 @@ class Main extends Component {
   // }
 
   render() {    
-    // If user isn't logged in, don't let them see this page
-    // if (!this.state.isLoggedIn) {
-    //   return <Redirect to="/login"/>
-    // }
-
-    // on join submit, 
-    // if (this.state.goToEvent) {
-    //   return <Redirect to={{
-    //     pathname: `/events/${this.state.codeInput}`,
-    //   }}
-    //   />
-    // }
-
     return (
-      <div>
-        <h1>Main</h1>
+      <div className='container'>
+        <h2>Main</h2>
+        <div className="main-photo-div">
+          <img src={BG} alt="" className="main-photo"/>
+        </div>
+        <div className="col-sm-4">
+                <form>
+                  <h2>Event Code:</h2>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="codeInput"
+                      value={this.state.codeInput}
+                      onChange={this.handleInputChange}
+                      className="form-control"
+                      placeholder="CODE"
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-success" onClick={this.goToUser}>GO</button>
+                  <div>
+                    <span>Create an Event<a href="/signup"> here!</a></span>
+                  </div>
+                </form>
+              </div>
       </div>
     )
   }
