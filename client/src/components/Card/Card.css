@@ -1,0 +1,73 @@
+.main-card-div{
+  display: contents;
+}
+
+.card {
+  display: inline-block;
+  margin: 0 5px 10px 5px;
+}
+
+.links {
+  color: black;
+}
+
+.links:hover {
+  color: var(--info);
+}
+
+.social-div {
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+  grid-template-rows: min-content;
+  grid-template-areas: "twitter . button" "fb . button" "linkedin . button" "github . button"
+}
+
+.social-inner {
+  display: grid;
+  grid-template-columns: min-content max-content;
+}
+
+.twitter {
+  grid-area: twitter;
+}
+
+.fb {
+  grid-area: fb;
+}
+
+.linkedin {
+  grid-area: linkedin;
+}
+
+.github {
+  grid-area: github;
+}
+
+.header-div {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-template-rows: repeat(4, min-content);
+  margin-bottom: 10px;
+}
+
+.user-photo {
+  height: 114px;
+  width: 114px;
+  margin-right: 10px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-photo-div {
+  align-self: center;
+}
+
+.header-info {
+  margin-top: 10px;
+}
+
+.export-button {
+  grid-area: button;
+  height: min-content;
+  align-self: center;
+}

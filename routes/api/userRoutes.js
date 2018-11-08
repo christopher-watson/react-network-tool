@@ -8,6 +8,9 @@ router
   .post(passport.authenticate('local'), function(req, res) {
     // Log in and send back user information
     console.log(req.user);
+    // if(req.user){
+    //   console.log(`${req.user.username} has logged in`)
+    // }
     res.json(req.user);
   })
   .get(function(req, res) {
@@ -45,5 +48,10 @@ router
   .route('/register')
   .post(usersController.register);
 
+// add event to user db
+// api/users/add/event
+router
+  .route('/add/:id')
+  .post(usersController.addEvent);
 
 module.exports = router;

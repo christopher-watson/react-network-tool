@@ -16,7 +16,7 @@
   grid-area: nav;
   display: grid;
   grid-template-columns: repeat(2, min-content);
-  grid-template-rows: min-content;
+  grid-template-rows: max-content;
   grid-template-areas:
     "logo . icons"
 }
@@ -58,7 +58,12 @@ li{
   width: 100%;
 }
 
-
+.click-link{
+  text-decoration: underline;
+  cursor: pointer;
+  color: #0082DF;
+  font-weight: bold;
+}
 
 
 

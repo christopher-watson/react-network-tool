@@ -1,17 +1,19 @@
 import React, { Component } from "react";
-// import { Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import API from "../utils/API";
 import BG from "../components/Images/bg.png";
 
 class Main extends Component {
   state = {
     isLoggedIn: true,
-    username: "",
-    eventCode: "",
-    codeInput: "",
+    username: '',
+    eventCode: '',
+    signMeUp: false,
+    // codeInput: "",
     goToEvent: false,
+    isEventAvail: true,
     // userNotExist: false,
-    eventUsers: []
+    // eventUsers: []
   }
 
   // Check login status on load
@@ -34,70 +36,107 @@ class Main extends Component {
 
   // handle input change for state
   handleInputChange = event => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     const value = event.target.value;
     this.setState({ 
         codeInput: value
     })
   }
 
-  // // displays newly created event code
-  // handleCreateEventSubmit = (event) => {
-  //   event.preventDefault();
-  //   const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ";
-  //   let eventCode = '';
-  //   for (let i = 0; i < 4; i++) {
-  //     let rnum = Math.floor(Math.random() * chars.length);
-  //     eventCode += chars.substring(rnum, rnum + 1);
-  //   }
-  //   // creates event in db
-  //   this.setState({eventCode: eventCode});
-  //   API
-  //     .createEvent({
-  //       Code: eventCode
-  //     })
-  // }
+  // displays newly created event code
+  handleCreateEventSubmit = (event) => {
+    event.preventDefault();
+    const chars = "0123456789abcdefghijklmnopqrstuvwxyz";
+    let eventCode = '';
+    if(this.state.isLoggedIn){
+      for (let i = 0; i < 4; i++) {
+        let rnum = Math.floor(Math.random() * chars.length);
+        eventCode += chars.substring(rnum, rnum + 1);
+      }
+      // creates event in db
+      this.setState({eventCode: eventCode});
+      API
+        .createEvent({
+          Code: eventCode
+        })
+      setTimeout(() => { this.setState({goToEvent: true}) }, 800);
+    }
+    if(!this.state.isLoggedIn){
 
-  // // check to see if event exist
-  // // send user to event page if event exist
-  //   // else display error message
-  // // edit url to display event path
-  // handleJoinEventSubmit = event => {
-  //   event.preventDefault();
-  //   API
-  //     .checkIfEventExist(this.state.codeInput)
-  //     .then(res => this.setState({ eventUsers: res.data._users }))
-  //     .then(
-  //       setTimeout(() => { this.addUserHelper() }, 500)
-  //     )
-  //     .catch(err => {
-  //       console.log(err);
-  //       // error modal
-  //     })
-  //   setTimeout(() => { this.setState({goToEvent: true}) }, 1500);
-  // }
+    }
+  }
 
-  // addUserHelper = () => {
-  //   API
-  //     .findByUserName(this.state.username)
-  //     .then(res => {
-  //       // console.log(res.data._id)
-  //       for(let i = 0; i < this.state.eventUsers.length; i++){
-  //         if (this.state.eventUsers[i] !== res.data._id){
-  //           console.log("👎🏽")
-  //           this.setState({ userNotExist: true })
-  //         }
-  //       }
-  //       setTimeout(() => { 
-  //         if(this.state.userNotExist){
-  //           API
-  //             .addUserToEvent(this.state.codeInput, res.data)
-  //         }
-  //       }, 800)
-  //     })
-  // }
+  handleEventCodeSubmit = event => {
+    event.preventDefault();
+    API
+      .checkIfEventExist(this.state.codeInput)
+      .then(res => {
+        console.log(res.data)
+        if(!res.data){
+          //if event !exist => err msg isEventAvail: false
+          this.setState({
+            isEventAvail: false
+          })
+          console.log("👎🏽 ");
+          console.log();
+        }
+        if(res.data){
+          if(this.state.isLoggedIn){
+            console.log("✅ ")
+            //add user to event
+            this.addUserToEvent();
+            //send user to event
+            setTimeout(() => { this.setState({goToEvent: true}) }, 800);
+          }
+          if(!this.state.isLoggedIn){
+            //if event exist => send to sign up page, bringing event code
+            console.log("🚨 ")
+            this.setState({
+              signMeUp: true
+            })
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
-  render() {    
+  addUserToEvent = () => {
+    API
+      .findByUserName(this.state.username)
+      .then(res => {
+        console.log(res.data._id)
+        console.log("user data")
+        API
+          .addUserToEvent(this.state.codeInput, {
+            _id: res.data._id,
+          })
+        API
+          // .addEventToUser(this.state.)
+      })
+    this.setState({eventCode: this.state.codeInput})
+  }
+
+  render() {
+    // on join submit, 
+    if (this.state.goToEvent) {
+      return <Redirect to={{
+        pathname: `/events/${this.state.codeInput}`,
+      }}
+      />
+    }
+
+    //event submit is pressed
+    //event exists
+    //user does not have account
+    if (this.state.signMeUp) {
+      return <Redirect to={{
+        pathname: `/signup/${this.state.codeInput}`,
+      }}
+      />
+    }
+
     return (
       <div className='container'>
         <h2>Main</h2>
@@ -117,9 +156,14 @@ class Main extends Component {
                       placeholder="CODE"
                     />
                   </div>
-                  <button type="submit" className="btn btn-success" onClick={this.goToUser}>GO</button>
-                  <div>
-                    <span>Create an Event<a href="/signup"> here!</a></span>
+                  <button type="submit" className="btn btn-success" onClick={this.handleEventCodeSubmit}>GO</button>
+                  {
+                    this.state.isEventAvail
+                    ? <span></span>
+                    : <span className="ml-2 text-danger">Event Not Available!</span>
+                  }
+                  <div className="mt-2">
+                    <span>Create an Event <span className="click-link" onClick={this.handleCreateEventSubmit}>here!</span></span>
                   </div>
                 </form>
               </div>

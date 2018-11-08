@@ -29,7 +29,11 @@ const User = new Schema({
   },
   git: { 
     type: String, 
-  }
+  },
+  _events: [{
+    type: [Schema.Types.ObjectId], 
+    ref: 'Event'
+  }]
 });
 
 // Set up passport to 

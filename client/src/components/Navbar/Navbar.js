@@ -6,7 +6,7 @@ import API from '../../utils/API'
 class Navbar extends Component {
   state = {
     isLoggedIn: true,
-    username: ""
+    username: " "
   }
 
   componentDidMount(){
