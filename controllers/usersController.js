@@ -32,9 +32,11 @@ module.exports = {
       .catch(err => res.status(422).json(err));
   },
   update: function (req, res) {
-    User.findOneAndUpdate({
-      _id: req.params.id
-    }, req.body)
+    db
+      .User
+      .findOneAndUpdate({
+        _id: req.params.id
+      }, req.body)
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
@@ -43,6 +45,18 @@ module.exports = {
       .User
       .findById({_id: req.params.id})
       .then(dbModel => dbModel.remove())
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  },
+  addEvent: function(req, res) {
+    // console.log(req.params.id)
+    db
+      .User
+      .findOneAndUpdate(
+        {_id: req.params.id},
+        {$push: {_events: req.body}},
+        // {safe: true, upsert: true},
+      )
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },

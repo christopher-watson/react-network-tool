@@ -1,29 +1,60 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
+import API from '../../utils/API'
 
-const Navbar = () => (
-  <nav className="navbar navbar-expand-lg navbar-light bg-light">
-    <Link className="navbar-brand" to="/">React-Network-Tool</Link>
-    <div className="collapse navbar-collapse">
-      <div className="navbar-nav">
-        {/* <li className="nav-item active">
-          <NavLink className="nav-item nav-link" to="/">Home</NavLink>
-        </li> */}
-        {/* <li className="nav-item">
-          <NavLink className="nav-link" to="/signup">Profile</NavLink>
-        </li> */}
-        {/* <li className="nav-item">
-          <NavLink className="nav-link" to="/login">Login</NavLink>
-        </li> */}
-        {/* <li>
-          <NavLink className="nav-link" to="/events">Events</NavLink>
-        </li> */}
-        <li>
-          <NavLink className="nav-link" to="/login">Login</NavLink>
-        </li>
-      </div>
-    </div>
-  </nav>
-);
+
+class Navbar extends Component {
+  state = {
+    isLoggedIn: true,
+    username: " "
+  }
+
+  componentDidMount(){
+    this.loginCheck();
+  }
+
+  loginCheck = () => {
+    API
+      .loginCheck()
+      .then(res => this.setState({
+        isLoggedIn: res.data.isLoggedIn, username: res.data.username
+      }))
+      .catch(err => {
+        console.log(err);
+        this.setState({isLoggedIn: false})
+      })
+  }
+
+  render () {
+    return (
+      <nav className="nav-bar navbar-light bg-light nav-container">
+        <NavLink className="navbar-brand" to="/">React-Network-Tool</NavLink>
+        <div className="icon-div">
+          <ul className="icon-ul">
+            <li className="icon-item">
+              <NavLink className="nav-link" to="/user">
+                {
+                  this.state.isLoggedIn 
+                  ? <span title="Settings"><i className="fas fa-cog icon" alt="Settings"></i></span>
+                  : <span title="Settings"></span>
+                }
+              </NavLink>
+            </li>
+            <li className="icon-item">
+              <NavLink className="nav-link" to={this.state.isLoggedIn ? "/logout" : "/login"}>
+                {
+                  this.state.isLoggedIn 
+                  ? <span title="Logout"><i className="fas fa-sign-out-alt icon" alt="logout"></i></span>
+                  : <span title="Login" className="nav-text">Login</span>
+                }
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    )
+  }
+}
 
 export default Navbar;
+
