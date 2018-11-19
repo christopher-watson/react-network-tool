@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
 import API from "../utils/API";
+import Navbar from "../components/Navbar";
 
 
 class Logout extends Component {
@@ -33,7 +34,8 @@ class Logout extends Component {
 
       return (
         <div>
-          <div className="container-fluid mt-5">
+          <Navbar />
+          <div className="container-fluid my-3">
             <div className="row justify-content-center">
               <h1>Logging you out....</h1>
             </div>

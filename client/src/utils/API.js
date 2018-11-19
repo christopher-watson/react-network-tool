@@ -34,13 +34,13 @@ export default {
   },
 
   // add user to event
-  addUserToEvent: function(event, userInfo) {
-    return axios.post(`/api/events/add/${event}`, userInfo)
+  addUserToEvent: function(eventCode, userInfo) {
+    return axios.post(`/api/events/add/${eventCode}`, userInfo)
   },
 
   // add event to user db
-  addEventToUser: function(event, userInfo) {
-    return axios.post(`/api/users/add/${event}`, userInfo)
+  addEventToUser: function(userId, eventId) {
+    return axios.post(`/api/users/add/${userId}`, eventId)
   },
 
   // find user by username
@@ -52,7 +52,17 @@ export default {
   updateUser: function(userId, userInfo) {
     return axios.put(`/api/users/${userId}`, userInfo)
   },
-  // add user to db
+
+  //find event by id
+  findEventId: function(eventId) {
+    return axios.get(`api/events/${eventId}`)
+  },
+
+  //find event by code
+  getEventCode: function(eventId) {
+    return axios.get(`api/events/getCode/${eventId}`)
+  }
+  // add user to db 
   //addUserToDb: function(id, userInfo) {
     //return axios.put(`/api/users/${id}`, userInfo)
   //}

@@ -17,6 +17,7 @@
   display: grid;
   grid-template-columns: repeat(2, min-content);
   grid-template-rows: max-content;
+  align-items: center;
   grid-template-areas:
     "logo . icons"
 }
@@ -29,11 +30,13 @@
 .icon-div{
   grid-area: icons;
   justify-self: right;
-
 }
 
 .icon-ul{
-  display: inline-flex;
+  display: flex;
+  margin-bottom: 0;
+  align-items: center;
+  padding: 10px 0;
 }
 
 li{
@@ -44,9 +47,10 @@ li{
   color: black;
   font-size: 1.8em;
 }
+
 .nav-text{
   color: black;
-  font-size: 1.2em;
+  font-size: 1.1em;
 }
 
 /* BODY */
