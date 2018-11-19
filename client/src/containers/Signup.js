@@ -74,7 +74,11 @@ class Signup extends Component {
     const pathname = window.location.pathname;
     const eventPath = pathname.substring(8, 12);
     console.log("eventPath: " + eventPath);
-    this.setState({eventPath: eventPath});
+    if(eventPath.length>0){
+      this.setState({ eventPath: eventPath });
+      setTimeout(() => { this.setState({newUser: true}) }, 500)
+      setTimeout(() => { this.setState({newUser: false}) }, 2000)
+    }
   }
 
 
@@ -124,6 +128,11 @@ class Signup extends Component {
                   <span>Already have an account?<a href="/Login"> Sign In</a></span>
                 </div>
               </form>
+              {
+              this.state.newUser
+              ? <span className="text-danger mt-5">Sign Up First!</span>
+              : <span></span>
+            }
             </div>
           </div>
         </div>

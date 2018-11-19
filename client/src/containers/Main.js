@@ -44,14 +44,14 @@ class Main extends Component {
     // console.log(event.target.value);
     const value = event.target.value;
     this.setState({ 
-        codeInput: value
+        codeInput: value.toUpperCase()
     })
   }
 
   // displays newly created event code
   handleCreateEventSubmit = (event) => {
     event.preventDefault();
-    const chars = "0123456789abcdefghijklmnopqrstuvwxyz";
+    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let eventCode = '';
     if(this.state.isLoggedIn){
       for (let i = 0; i < 4; i++) {
@@ -64,7 +64,10 @@ class Main extends Component {
         .createEvent({
           Code: eventCode
         })
-      setTimeout(() => { this.setState({goToEvent: true}) }, 800);
+      this.setState({sendingToEvent: true})
+      setTimeout(() => { 
+        this.setState({goToEvent: true}) 
+      }, 2000);
     }
     if(!this.state.isLoggedIn){
       //send user to login page
@@ -200,7 +203,7 @@ class Main extends Component {
     // on join submit, 
     if (this.state.goToEvent) {
       return <Redirect to={{
-        pathname: `/events/${this.state.codeInput}`,
+        pathname: `/events/${this.state.eventCode}`,
       }}
       />
     }
@@ -240,7 +243,7 @@ class Main extends Component {
                   value={this.state.codeInput}
                   onChange={this.handleInputChange}
                   className="form-control"
-                  placeholder="CODE"
+                  // placeholder="CODE"
                 />
               </div>
               <button type="submit" className="btn btn-success" onClick={this.handleEventCodeSubmit}>GO</button>
