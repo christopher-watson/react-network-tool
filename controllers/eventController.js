@@ -53,7 +53,7 @@ module.exports = {
       .findOneAndUpdate(
         {Code: req.params.id},
         {$push: {_users: req.body}},
-        // {safe: true, upsert: true},
+        {safe: true, upsert: true},
       )
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));

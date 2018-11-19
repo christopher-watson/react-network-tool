@@ -47,9 +47,9 @@ const Card = props => (
                 </div>
                 <a href={`http://www.github.com/${user.git}`} target="_blank" rel="noopener noreferrer" className="links">{user.git}</a>
               </div>
-              <button className="btn btn-danger export-button">Export
+              {/* <button className="btn btn-danger export-button">Export
                 <i className="fas fa-download"></i>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

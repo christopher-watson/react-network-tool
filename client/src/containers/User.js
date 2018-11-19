@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import API from "../utils/API";
+import Navbar from "../components/Navbar";
 
 class User extends Component {
   state = {
@@ -17,7 +18,12 @@ class User extends Component {
     link: "",
     git: "",
     eventPath: "",
-    userId: ""
+    userId: "",
+    updated: false,
+    userHasEvent: false,
+    joinedEvents: [],
+    joinedEventCodes: [],
+    goToEvent: ''
   }
 
   componentDidMount() {
@@ -65,15 +71,27 @@ class User extends Component {
         console.log(res.data)
       })
       .catch(err => console.log(err.response.data))
-    API
-      .addUserToEvent( this.state.eventPath, {_id: this.state.userId})
-      .then(res => {
-        console.log(res.data);
-        this.setState({
-          success: res.data
+    if(this.state.eventPath){
+      API
+        .addEventToUser( this.state.userId, { _id: this.state.eventPathId })
+        .then(res => {
+          console.log(res.data);
         })
-      })
-      .catch(err => console.log(err.response.data));
+        .catch(err => console.log(err.response.data));
+      API
+        .addUserToEvent( this.state.eventPath, { _id: this.state.userId })
+        .then(res => {
+          console.log(res.data);
+          this.setState({
+            goToEvent: res.data.Code
+          })
+        })
+        .catch(err => console.log(err.response.data));
+    }
+    if(!this.state.eventPath){
+      this.setState({ updated: true });
+      setTimeout(() => { this.setState({ updated: false })}, 4000);
+     }
   }
 
   getPath = () => {
@@ -81,7 +99,15 @@ class User extends Component {
     const pathname = window.location.pathname;
     const eventPath = pathname.substring(6, 10);
     console.log("eventPath: " + eventPath);
-    this.setState({eventPath: eventPath});
+    if(eventPath){
+      this.setState({eventPath: eventPath});
+      API
+      .checkIfEventExist(eventPath)
+      .then(res => {
+        console.log(res.data._id);
+        this.setState({eventPathId: res.data._id});
+        })
+    }
   }
 
   getUserInfo = () => {
@@ -89,20 +115,64 @@ class User extends Component {
       API
         .findByUserName(this.state.username)
         .then(res => {
-          console.log(res.data._id);
-          this.setState({
-            userId: res.data._id,
-            name: res.data.name,
-            email: res.data.email,
-            phone: res.data.phone,
-            twitter: res.data.twitter,
-            fb: res.data.fb,
-            link: res.data.link,
-            git: res.data.git
-          })
+          console.log(res.data);
+          if(res.data._events.length>0){
+            this.setState({
+              userId: res.data._id,
+              name: res.data.name,
+              email: res.data.email,
+              phone: res.data.phone,
+              twitter: res.data.twitter,
+              fb: res.data.fb,
+              link: res.data.link,
+              git: res.data.git,
+              joinedEvents: [...res.data._events],
+              userHasEvent: true
+            })
+            setTimeout(() => { this.populateEventIds() }, 1000);
+          }
+          else{
+            this.setState({
+              userId: res.data._id,
+              name: res.data.name,
+              email: res.data.email,
+              phone: res.data.phone,
+              twitter: res.data.twitter,
+              fb: res.data.fb,
+              link: res.data.link,
+              git: res.data.git,
+            })
+          }
         })
-        .catch(err => console.log(err.response.data));
+        .catch(err => console.log(err));
     }
+  }
+
+  populateEventIds = () => {
+    console.log(this.state.joinedEvents);
+    for(let i=0; i<this.state.joinedEvents.length; i++){
+      API
+        .getEventCode(this.state.joinedEvents[i])
+        .then(res => {
+          console.log(res.data.Code)
+          this.setState({
+            joinedEventCodes: [...this.state.joinedEventCodes, res.data.Code]
+          })
+          //if the event is already in the list
+          // if (this.state.joinedEventCodes.indexOf(res.data.Code)){
+          //   //ignore 
+          // }
+          // else{
+          //   this.setState({
+          //     joinedEventCodes: [...this.state.joinedEventCodes, res.data.Code]
+          //   })
+          // }
+        })
+      }
+  }
+
+  goToEvent = (event) => {
+    this.setState({ goToEvent: event })
   }
 
   render() {
@@ -110,15 +180,16 @@ class User extends Component {
       return <Redirect to="/"/>
       }
     // If Signup was a success, take them to the event page
-    if (this.state.success) {
+    if (this.state.goToEvent) {
       return <Redirect to={{
-        pathname: `/events/${this.state.eventPath}`,
+        pathname: `/events/${this.state.goToEvent}`,
       }}/>
     }
 
     return (
       <div>
-        <div className="container my-5">
+        <Navbar />
+        <div className="container my-3">
           <h3>Update Profile!</h3>
           <form>
             <div className="form-row">
@@ -262,11 +333,25 @@ class User extends Component {
               </div>
             </div>
             <button
-              className="btn btn-primary mt-2"
+              className="btn btn-primary"
               id="contactInfoSubmit"
               type="button"
               onClick={this.updateUser}
-            >Submit</button>
+              >Submit
+            </button>
+            {
+              this.state.userHasEvent
+              ? this.state.joinedEventCodes.map(event => (
+                  <button key={event} type="button" className="btn btn-success ml-2" onClick={() => this.goToEvent(event)}>{event}</button>
+                ))
+              : <span></span>
+            }
+            <br/>
+            {
+              this.state.updated
+              ? <span className="success-message text-success">Your Profile has been Updated!</span>
+              : <span></span>
+            }
           </form>
         </div>
       </div>
@@ -275,3 +360,5 @@ class User extends Component {
 }
 
 export default User;
+
+

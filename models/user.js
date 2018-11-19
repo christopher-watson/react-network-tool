@@ -5,11 +5,11 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const User = new Schema({
   name: { 
     type: String, 
-    default: 'No Name'
+    default: ''
   },
   email: { 
     type: String, 
-    default: 'No Email'
+    default: ''
   },
   photo: { 
     type: String, 

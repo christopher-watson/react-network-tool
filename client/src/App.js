@@ -6,13 +6,13 @@ import Logout from "./containers/Logout";
 import Signup from './containers/Signup';
 import User from './containers/User';
 import Events from './containers/Events';
-import Navbar from './components/Navbar';
+// import Navbar from './components/Navbar';
 import './App.css';
 
 const App = () => (
   <Router>
     <div className="main-container">
-      <Navbar/>
+      {/* <Navbar/> */}
       <Switch>
         <Route exact path="/" component={Main} />
         <Route exact path="/login" component={Login} />

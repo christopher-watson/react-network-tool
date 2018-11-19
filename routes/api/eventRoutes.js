@@ -24,4 +24,10 @@ router
   .route('/add/:id')
   .post(eventController.addUser)
 
+// ..api/events/findCode/:id
+router
+  .route('/getCode/:id')
+  .get(eventController.findById)
+
+
 module.exports = router;

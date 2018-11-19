@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
 import API from "../utils/API";
+import Navbar from "../components/Navbar";
 
 class Login extends Component {
   state = {
@@ -30,7 +31,6 @@ class Login extends Component {
 
   handleInputChange = e => {
     const { name, value } = e.target;
-
     this.setState({
       [name]: value
     })
@@ -67,38 +67,41 @@ class Login extends Component {
       }
     else {
         return (
-          <div className="container my-5">
-            <div className="row justify-content-left">
-              <div className="col-sm-4">
-                <form>
-                  <h2>Login</h2>
-                  <div className="form-group">
-                    <label htmlFor="username">Username</label>
-                    <input
-                      type="text"
-                      name="username"
-                      value={this.state.username}
-                      onChange={this.handleInputChange}
-                      className="form-control"
-                      // placeholder="Username"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      value={this.state.password}
-                      onChange={this.handleInputChange}
-                      className="form-control"
-                      // placeholder="Password"
-                    />
-                  </div>
-                  <button type="submit" className="btn btn-success" onClick={this.login}>Login</button>
-                  <div className="mt-2">
-                    <span>Don't have an account?<a href="/signup"> Signup</a></span>
-                  </div>
-                </form>
+          <div>
+            <Navbar />
+            <div className="container my-3">
+              <div className="row justify-content-left">
+                <div className="col-sm-4">
+                  <form>
+                    <h2>Login</h2>
+                    <div className="form-group">
+                      <label htmlFor="username">Username</label>
+                      <input
+                        type="text"
+                        name="username"
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                        className="form-control"
+                        // placeholder="Username"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="password">Password</label>
+                      <input
+                        type="password"
+                        name="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        className="form-control"
+                        // placeholder="Password"
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-success" onClick={this.login}>Login</button>
+                    <div className="mt-2">
+                      <span>Don't have an account?<a href="/signup"> Signup</a></span>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

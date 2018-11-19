@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-// import { Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import Navbar from '../components/Navbar';
 import API from "../utils/API";
 import Cards from '../components/Card';
 
@@ -44,13 +45,15 @@ class Events extends Component {
   }
 
   render() {
-    // if (!this.state.isLoggedIn) {
-    //   return <Redirect to="/login"/>
-    // }
+    if (!this.state.isLoggedIn) {
+      return <Redirect to="/login"/>
+    }
     const isEvent = this.state.event;
     return (
-      <div> 
-        <div className="container-fluid my-5">
+      <div>
+        <Navbar/> 
+        {/* <div className="container-fluid my-5"> */}
+        <div className="container my-3">
           <div className="row justify-content-center">
             <h1>{isEvent ? this.state.event : "No Event Selected"}</h1>
           </div>

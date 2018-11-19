@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import API from "../utils/API";
+import Navbar from "../components/Navbar";
 
 class Signup extends Component {
   state = {
@@ -89,7 +90,9 @@ class Signup extends Component {
 
     return (
       <div>
-        <div className="container my-5">
+        <Navbar />
+        <div className="container my-3">
+        {/* <div className="my-5"> */}
           <div className="row justify-content-left">
             <div className="col-sm-4">
               <form>
