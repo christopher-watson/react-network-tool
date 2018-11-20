@@ -15,9 +15,8 @@ class Main extends Component {
     logInYo: false,
     sendToLogin: false,
     codeInput: "",
-    invalidInput: false
-    // userNotExist: false,
-    // eventUsers: []
+    invalidInput: false,
+    // eventTimer: 5
   }
 
   // Check login status on load
@@ -78,7 +77,7 @@ class Main extends Component {
 
   handleEventCodeSubmit = event => {
     event.preventDefault();
-    if(this.state.codeInput.length > 3){
+    if(this.state.codeInput.length === 4){
       // console.log('🙌🏽')
       API
         .checkIfEventExist(this.state.codeInput)
@@ -97,8 +96,6 @@ class Main extends Component {
               console.log("✅")
               //add user to event
               this.addUserToEvent();
-              //send user to event
-              // setTimeout(() => { this.setState({goToEvent: true}) }, 2000);
             }
             if(!this.state.isLoggedIn){
               //if event exist => send to sign up page, bringing event code
@@ -113,10 +110,10 @@ class Main extends Component {
           console.log(err)
         })
     }
-    if(this.state.codeInput.length < 4){
+    if(this.state.codeInput.length < 4 || this.state.codeInput.length > 4){
       //invalid input
       this.setState({ invalidInput: true })
-      setTimeout(() => { this.setState({invalidInput: false}) }, 800);
+      setTimeout(() => { this.setState({invalidInput: false}) }, 1000);
     }
   }
 
@@ -140,32 +137,40 @@ class Main extends Component {
         console.log(res.data._id)
         functionEventId=res.data._id
       })
-    //if the user isnt already in this event, add them to event
-    if(!this.state.joinedEvents.indexOf(functionEventId)){
-      //add user to event using CODE and userID
-      setTimeout(() => {
-        API
+    setTimeout(() => {
+      //if the user isnt already in this event, add them to event
+      if(this.state.joinedEvents.includes(functionEventId)){
+        console.log('user already joined this event')
+        console.log(this.state.joinedEvents)
+        console.log(functionEventId)
+        console.log(functionUserId)
+      }
+      else{
+        console.log('user has not joined this event')
+        console.log(this.state.joinedEvents)
+        console.log(functionEventId)
+        console.log(functionUserId)
+        //add user to event using CODE and userID
+        setTimeout(() => {
+          API
           .addUserToEvent(this.state.codeInput, {
             _id: functionUserId
           })
           .catch(err => { console.log(err) })
-      }, 800);
-      //add event to user using userID and eventID
-      setTimeout(() => {
-        API
-        .addEventToUser(functionUserId, {
-          _id: functionEventId
-        })
+        }, 800);
+        //add event to user using userID and eventID
+        setTimeout(() => {
+          API
+          .addEventToUser(functionUserId, {
+            _id: functionEventId
+          })
         .catch(err => { console.log(err) })
-      }, 1000);
-    }
-    else{
-      console.log('user already joined this event')
-    }
-    this.setState({sendingToEvent: true})
-    setTimeout(() => { this.setState({eventCode: this.state.codeInput}) }, 1500);
-    setTimeout(() => { this.setState({goToEvent: true}) }, 2000);
-
+        }, 1000);
+      }
+      setTimeout(() => { this.setState({ eventCode: this.state.codeInput }) }, 1500);
+      setTimeout(() => { this.setState({ goToEvent: true }) }, 2000);
+    }, 1000);
+    this.setState({ sendingToEvent: true })
   }
 
   sendToLogin = () => {
@@ -179,6 +184,7 @@ class Main extends Component {
         .then(res => {
           console.log(res.data._events);
           if(res.data._events.length>0){
+            console.log('has events')
             this.setState({
               // userId: res.data._id,
               // name: res.data.name,
@@ -268,7 +274,7 @@ class Main extends Component {
             }
             {
               this.state.sendingToEvent
-              ? <span className="text-primary mt-5">Sending you to your event!</span>
+              ? <span className="text-primary mt-5">Sending you to the event! .. <i class="fas fa-spinner fa-pulse"></i></span>
               : <span></span>
             }
           </div>
