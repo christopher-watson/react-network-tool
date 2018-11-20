@@ -4,7 +4,7 @@ import "../Card/Card.css";
 const Card = props => (
   <div className="main-card-div">
     {props.eventUsers.map(user => (
-      <div key={user.id}>
+      <div key={user._id}>
         <div className="card">
           <div className="card-header bg-info"></div>
           <div className="card-body">
@@ -23,30 +23,54 @@ const Card = props => (
               </div>
             </div>
             <div className="social-div">
+            {
+              user.twitter
+              ?
               <div className="social-inner twitter">
                 <div className="contact-image mr-2">
                   <i className="fab fa-twitter"></i>
                 </div>
                 <a href={`http://www.twitter.com/${user.twitter}`} target="_blank" rel="noopener noreferrer" className="links">{user.twitter ? user.twitter : ""}</a>
               </div>
+              :
+              <span></span>
+            }
+            {
+              user.fb
+              ?
               <div className="social-inner fb">
                 <div className="contact-image mr-2">
                   <i className="fab fa-facebook"></i>
                 </div>
                 <a href={`http://www.facebook.com/${user.fb}`} target="_blank" rel="noopener noreferrer" className="links">{user.fb}</a>
               </div>
+              :
+              <span></span>
+            }
+            {
+              user.link
+              ?
               <div className="social-inner linkedin">
                 <div className="contact-image mr-2">
                   <i className="fab fa-linkedin"></i>
                 </div>
                 <a href={`http://www.linkedin.com/in/${user.link}`} target="_blank" rel="noopener noreferrer" className="links">{user.link}</a>
               </div>
+              :
+              <span></span>
+            }
+            {
+              user.git
+              ?
               <div className="social-inner github">
                 <div className="contact-image mr-2">
                   <i className="fab fa-github"></i>
                 </div>
                 <a href={`http://www.github.com/${user.git}`} target="_blank" rel="noopener noreferrer" className="links">{user.git}</a>
               </div>
+              :
+              <span></span>
+            }
               {/* <button className="btn btn-danger export-button">Export
                 <i className="fas fa-download"></i>
               </button> */}

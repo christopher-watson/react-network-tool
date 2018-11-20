@@ -72,8 +72,8 @@ li{
 
 
 
-/* .App-logo {
-  animation: App-logo-spin infinite 20s linear;
+/* .load-logo {
+  animation: spin 2s linear infinite;
   height: 40vmin;
 } */
 
@@ -92,11 +92,11 @@ li{
   color: #61dafb;
 } */
 
-/* @keyframes App-logo-spin {
-  from {
+/* @keyframes spin {
+  0% {
     transform: rotate(0deg);
   }
-  to {
+  100% {
     transform: rotate(360deg);
   }
 } */
