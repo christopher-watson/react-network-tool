@@ -8,27 +8,28 @@ class Login extends Component {
     isLoggedIn: false,
     username: "",
     password: "",
+    loginInvalid: false,
   }
 
-    // Check login status on load
-    componentDidMount() {
-      this.loginCheck();
-    }
+  // Check login status on load
+  componentDidMount() {
+    this.loginCheck();
+  }
+
+  // Check login status
+  loginCheck = () => {
+    API
+      .loginCheck()
+      .then(res => this.setState({
+        isLoggedIn: res.data.isLoggedIn, username: res.data.username
+      }))
+      .catch(err => {
+        console.log(err);
+        this.setState({isLoggedIn: false})
+      })
+  }
+
   
-    // Check login status
-    loginCheck = () => {
-      API
-        .loginCheck()
-        .then(res => this.setState({
-          isLoggedIn: res.data.isLoggedIn, username: res.data.username
-        }))
-        .catch(err => {
-          console.log(err);
-          this.setState({isLoggedIn: false})
-        })
-    }
-
-
   handleInputChange = e => {
     const { name, value } = e.target;
     this.setState({
@@ -44,21 +45,34 @@ class Login extends Component {
       .then(res => {
         // console.log(res.data);
         this.setState({isLoggedIn: res.data})
-
       })
-      .catch(err => console.log(err.response));
+      .catch(err => {
+        console.log(err.response);
+        if(err.response.data === 'Unauthorized' || err.response.data === 'Bad Request'){
+          console.log('🧐');
+          this.setState({ loginInvalid: true })
+          setTimeout(() => { this.setState({ loginInvalid: false }) }, 3000)
+        }
+      })
+
   }
 
-  // logout = (e) => {
-  //   e.preventDefault();
+  //server-side validate username
+  // validateUserName = () => {
   //   API
-  //     .logout({username: this.state.username, password: this.state.password})
+  //     .findByUserName(this.state.username)
   //     .then(res => {
-  //       // console.log(res.data);
-  //       this.setState({isLoggedIn: res.data})
+  //       console.log(res.data);
+  //       if(!res.data){
+  //         this.setState({ usernameInvalid: true })
+  //       }
+  //       if(res.data){
+  //         this.setState({ usernameInvalid: false })
+  //       }
   //     })
-  //     .catch(err => console.log(err.response));
+  //     .catch(err => console.log(err));
   // }
+
 
   render() {
     // If user is logged in, take them to main page
@@ -82,9 +96,13 @@ class Login extends Component {
                         value={this.state.username}
                         onChange={this.handleInputChange}
                         className="form-control"
+                        // onBlur={() => this.validateUserName()}
                         // placeholder="Username"
                       />
                     </div>
+                    {/* <small id="usernameError" className="form-text text-danger">
+                      {this.state.usernameInvalid ? 'Username does not exist' : ''}
+                    </small> */}
                     <div className="form-group">
                       <label htmlFor="password">Password</label>
                       <input
@@ -96,7 +114,33 @@ class Login extends Component {
                         // placeholder="Password"
                       />
                     </div>
-                    <button type="submit" className="btn btn-success" onClick={this.login}>Login</button>
+                    <small id="loginError" className="form-text text-danger mb-3">
+                      {this.state.loginInvalid ? 'Username or Password Incorrect' : ''}
+                    </small>
+                    <button 
+                      type="submit" 
+                      className="btn btn-success" 
+                      onClick={this.login}
+                        >Login
+                    </button>
+                    {/* {
+                      this.state.usernameInvalid ||
+                      this.state.passwordInvalid
+                      ?
+                      <button 
+                      type="submit" 
+                      className="btn btn-success disabled" 
+                      onClick={(e) => e.preventDefault()}
+                        >Login
+                      </button>
+                      :
+                      <button 
+                      type="submit" 
+                      className="btn btn-success" 
+                      onClick={this.login}
+                        >Login
+                      </button>
+                    } */}
                     <div className="mt-2">
                       <span>Don't have an account?<a href="/signup"> Signup</a></span>
                     </div>
