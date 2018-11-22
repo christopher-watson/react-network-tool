@@ -10,6 +10,8 @@ class Signup extends Component {
     username: "",
     password: "",
     eventPath: "",
+    usernameInvalid: false,
+    passwordInvalid: false,
   }
 
   componentDidMount() {
@@ -81,6 +83,36 @@ class Signup extends Component {
     }
   }
 
+  validateField = (fieldName, value) => {
+    let usernameInvalid = this.state.usernameInvalid
+    let passwordInvalid = this.state.passwordInvalid
+
+    switch(fieldName) {
+      case 'username':
+        usernameInvalid = value.match(/^[A-Za-z0-9_]{1,15}$/);
+        if(!usernameInvalid){
+          this.setState({ usernameInvalid: true })
+        }
+        if(this.state.username === '' || usernameInvalid){
+          this.setState({ usernameInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      case 'password':
+        passwordInvalid = value.match(/^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/);
+        if(!passwordInvalid){
+          this.setState({ passwordInvalid: true })
+        }
+        if(this.state.password === '' || passwordInvalid){
+          this.setState({ passwordInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      
+      default:
+        break;
+    }
+  }
 
   render() {
     // If Signup was a success, 
@@ -109,9 +141,13 @@ class Signup extends Component {
                     value={this.state.username}
                     onChange={this.handleInputChange}
                     className="form-control"
+                    onBlur={() => this.validateField('username', this.state.username)} 
                     // placeholder="Username"
                   />
                 </div>
+                <small id="usernameError" className="form-text text-danger">
+                  {this.state.usernameInvalid ? 'Please enter a valid username' : ''}
+                </small>
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
                   <input
@@ -120,15 +156,38 @@ class Signup extends Component {
                     value={this.state.password}
                     onChange={this.handleInputChange}
                     className="form-control"
+                    onBlur={() => this.validateField('password', this.state.password)}
                     // placeholder="Password"
                   />
                 </div>
-                <button type="submit" className="btn btn-success" onClick={this.register}>Sign Up!</button>
+                <small id="passwordError" className="form-text text-danger">
+                  {this.state.passwordInvalid ? 'Password must be 8 charcters long. At least 1-CAP, 1-low, 1-$*&!' : ''}
+                </small>
+                {
+                  this.state.usernameInvalid ||
+                  this.state.passwordInvalid
+                  ?
+                  <button 
+                    type="submit" 
+                    className="btn btn-success disabled" 
+                    onClick={(e) => e.preventDefault()}
+                    >Sign Up!
+                  </button>
+                  :
+                  <button 
+                    type="submit" 
+                    className="btn btn-success" 
+                    onClick={this.register}
+                    >Sign Up!
+                  </button>
+
+                  
+                }
                 <div className="mt-2">
                   <span>Already have an account?<a href="/Login"> Sign In</a></span>
                 </div>
               </form>
-              {
+            {
               this.state.newUser
               ? <span className="text-danger mt-5">Sign Up First!</span>
               : <span></span>

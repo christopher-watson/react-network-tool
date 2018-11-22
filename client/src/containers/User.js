@@ -14,16 +14,24 @@ class User extends Component {
     email: "",
     phone: "",
     twitter: "",
-    fb: "",
-    link: "",
-    git: "",
+    facebook: "",
+    linkedin: "",
+    github: "",
     eventPath: "",
     userId: "",
     updated: false,
     userHasEvent: false,
     joinedEvents: [],
     joinedEventCodes: [],
-    goToEvent: ''
+    goToEvent: '',
+    nameInvalid: false,
+    emailInvalid: false,
+    phoneInvalid: false,
+    twitterInvalid: false,
+    facebookInvalid: false,
+    linkedinInvalid: false,
+    githubInvalid: false,
+    formInvalid: true
   }
 
   componentDidMount() {
@@ -50,6 +58,7 @@ class User extends Component {
     this.setState({
       [name]: value
     })
+    // this.validateForm()
   }
 
   // Method to update a new user
@@ -63,9 +72,9 @@ class User extends Component {
         email: this.state.email,
         phone: this.state.phone,
         twitter: this.state.twitter,
-        fb: this.state.fb,
-        link: this.state.link,
-        git: this.state.git
+        fb: this.state.facebook,
+        link: this.state.linkedin,
+        git: this.state.github
       })
       .then(res => {
         console.log(res.data)
@@ -123,9 +132,9 @@ class User extends Component {
               email: res.data.email,
               phone: res.data.phone,
               twitter: res.data.twitter,
-              fb: res.data.fb,
-              link: res.data.link,
-              git: res.data.git,
+              fb: res.data.facebook,
+              link: res.data.linkedin,
+              git: res.data.github,
               joinedEvents: [...res.data._events],
               userHasEvent: true
             })
@@ -138,9 +147,9 @@ class User extends Component {
               email: res.data.email,
               phone: res.data.phone,
               twitter: res.data.twitter,
-              fb: res.data.fb,
-              link: res.data.link,
-              git: res.data.git,
+              fb: res.data.facebook,
+              link: res.data.linkedin,
+              git: res.data.github,
             })
           }
         })
@@ -158,15 +167,6 @@ class User extends Component {
           this.setState({
             joinedEventCodes: [...this.state.joinedEventCodes, res.data.Code]
           })
-          //if the event is already in the list
-          // if (this.state.joinedEventCodes.indexOf(res.data.Code)){
-          //   //ignore 
-          // }
-          // else{
-          //   this.setState({
-          //     joinedEventCodes: [...this.state.joinedEventCodes, res.data.Code]
-          //   })
-          // }
         })
       }
   }
@@ -174,6 +174,101 @@ class User extends Component {
   goToEvent = (event) => {
     this.setState({ goToEvent: event })
   }
+
+  validateField = (fieldName, value) => {
+    let nameInvalid = this.state.nameInvalid
+    let emailInvalid = this.state.emailInvalid
+    let phoneInvalid = this.state.phoneInvalid
+    let twitterInvalid = this.state.twitterInvalid
+    let facebookInvalid = this.state.facebookInvalid
+    let linkedinInvalid = this.state.linkedinInvalid
+    let githubInvalid = this.state.githubInvalid
+
+    switch(fieldName) {
+      case 'name':
+        nameInvalid = value.match(/^\s*[a-zA-Z,\s]+\s*$/i);
+        if(!nameInvalid){
+          this.setState({ nameInvalid: true })
+        }
+        if(this.state.name === '' || nameInvalid){
+          this.setState({ nameInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      case 'email':
+        emailInvalid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        if(!emailInvalid){
+          this.setState({ emailInvalid: true })
+        }
+        if(this.state.email === '' || emailInvalid){
+          this.setState({ emailInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      case 'phone':
+        phoneInvalid = value.match(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/i);
+        if(!phoneInvalid){
+          this.setState({ phoneInvalid: true })
+        }
+        if(this.state.phone === '' || phoneInvalid){
+          this.setState({ phoneInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      case 'twitter':
+        twitterInvalid = value.match(/^[A-Za-z0-9_]{1,15}$/);
+        if(!twitterInvalid){
+          this.setState({ twitterInvalid: true })
+        }
+        if(this.state.twitter === '' || twitterInvalid){
+          this.setState({ twitterInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      case 'facebook':
+        facebookInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/);
+        if(!facebookInvalid){
+          this.setState({ facebookInvalid: true })
+        }
+        if(this.state.facebook === '' || facebookInvalid){
+          this.setState({ facebookInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      case 'linkedin':
+        linkedinInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/);
+        if(!linkedinInvalid){
+          this.setState({ linkedinInvalid: true })
+        }
+        if(this.state.linkedin === '' || linkedinInvalid){
+          this.setState({ linkedinInvalid: false })
+        }
+        // this.validateForm();
+        break;
+      case 'github':
+        githubInvalid = value.match(/^[A-Za-z0-9_-]{1,20}$/);
+        if(!githubInvalid){
+          this.setState({ githubInvalid: true })
+        }
+        if(this.state.github === '' || githubInvalid){
+          this.setState({ githubInvalid: false })
+        }
+        // this.validateForm();
+        break;
+        
+      default:
+        break;
+    }
+  }
+
+  // validateForm = () => { 
+  //   if(this.state.name !== '' && this.state.email !== '' && this.state.phone !== '' && this.state.message !== ''){
+  //     this.setState({ formInvalid: false })
+  //   }
+  //   else{
+  //     this.setState({ formInvalid: true })
+  //   }
+  // }
 
   render() {
     if (!this.state.isLoggedIn) {
@@ -203,11 +298,12 @@ class User extends Component {
                   value={this.state.name}
                   onChange={this.handleInputChange}
                   // placeholder="Name"
-                  required 
+                  required
+                  onBlur={() => this.validateField('name', this.state.name)} 
                 />
-                <div className="invalid-feedback">
-                  Please provide your name
-                </div>
+              <small id="nameError" className="form-text text-danger">
+                {this.state.nameInvalid ? 'Please enter a valid name' : ''}
+              </small>
               </div>
               {/* <div className="col-md-6 mb-3">
                 <label htmlFor="photo">Upload a Photo</label>
@@ -234,12 +330,13 @@ class User extends Component {
                   name="email"
                   value={this.state.email}
                   onChange={this.handleInputChange}
+                  onBlur={() => this.validateField('email', this.state.email)} 
                   // placeholder="Email"
                   required 
                 />
-                <div className="invalid-feedback">
-                  Please provide your email address
-                </div>
+              <small id="emailError" className="form-text text-danger">
+                {this.state.emailInvalid ? 'Please enter a valid email address' : ''}
+              </small>
               </div>
               <div className="col-md-4 mb-3">
                 <label htmlFor="phone">Phone Number</label>
@@ -250,8 +347,12 @@ class User extends Component {
                   name="phone"
                   value={this.state.phone}
                   onChange={this.handleInputChange}
+                  onBlur={() => this.validateField('phone', this.state.phone)} 
                   // placeholder="555-222-1337"
                 />
+              <small id="phoneError" className="form-text text-danger">
+                {this.state.phoneInvalid ? 'Please enter a valid phone number' : ''}
+              </small>
               </div>
             </div>
 
@@ -269,10 +370,14 @@ class User extends Component {
                   name="twitter"
                   value={this.state.twitter}
                   onChange={this.handleInputChange}
+                  onBlur={() => this.validateField('twitter', this.state.twitter)} 
                   // placeholder="jimbosmith"
                   aria-describedby="inputGroupPrepend" 
                 />
                 </div>
+                <small id="twitterError" className="form-text text-danger">
+                  {this.state.twitterInvalid ? 'Please enter a valid twitter handle' : ''}
+                </small>
               </div>
 
               <div className="col-md-3 mb-3">
@@ -284,14 +389,18 @@ class User extends Component {
                   <input
                     type="text"
                     className="form-control"
-                    id="fb"
-                    name="fb"
-                    value={this.state.fb}
+                    id="facebook"
+                    name="facebook"
+                    value={this.state.facebook}
                     onChange={this.handleInputChange}
+                    onBlur={() => this.validateField('facebook', this.state.facebook)}
                     // placeholder="janesmith"
                     aria-describedby="inputGroupPrepend" 
                   />
                 </div>
+                <small id="facebookError" className="form-text text-danger">
+                  {this.state.facebookInvalid ? 'Please enter a valid facebook url' : ''}
+                </small>
               </div>
 
               <div className="col-md-3 mb-3">
@@ -303,14 +412,18 @@ class User extends Component {
                   <input
                     type="text"
                     className="form-control"
-                    id="link"
-                    name="link"
-                    value={this.state.link}
+                    id="linkedin"
+                    name="linkedin"
+                    value={this.state.linkedin}
                     onChange={this.handleInputChange}
+                    onBlur={() => this.validateField('linkedin', this.state.linkedin)}
                     // placeholder="willsmith"
                     aria-describedby="inputGroupPrepend" 
                   />
                 </div>
+                <small id="linkedinError" className="form-text text-danger">
+                  {this.state.linkedinInvalid ? 'Please enter a valid username' : ''}
+                </small>
               </div>
 
               <div className="col-md-3 mb-3">
@@ -322,23 +435,45 @@ class User extends Component {
                   <input
                     type="text"
                     className="form-control"
-                    id="git"
-                    name="git"
-                    value={this.state.git}
+                    id="github"
+                    name="github"
+                    value={this.state.github}
                     onChange={this.handleInputChange}
+                    onBlur={() => this.validateField('github', this.state.github)}
                     // placeholder="cooljames"
                     aria-describedby="inputGroupPrepend" 
                   />
                 </div>
+                <small id="githubError" className="form-text text-danger">
+                  {this.state.githubInvalid ? 'Please enter a valid username' : ''}
+                </small>
               </div>
             </div>
-            <button
-              className="btn btn-primary"
-              id="contactInfoSubmit"
-              type="button"
-              onClick={this.updateUser}
-              >Submit
-            </button>
+            {
+              this.state.nameInvalid || 
+              this.state.emailInvalid ||
+              this.state.phoneInvalid ||
+              this.state.twitterInvalid ||
+              this.state.facebookInvalid ||
+              this.state.linkedinInvalid ||
+              this.state.githubInvalid
+              ?
+              <button
+                className="btn btn-primary disabled"
+                id="contactInfoSubmit"
+                type="button"
+                // onClick={this.updateUser}
+                >Submit
+              </button>
+              :
+              <button
+                className="btn btn-primary"
+                id="contactInfoSubmit"
+                type="button"
+                onClick={this.updateUser}
+                >Submit
+              </button>
+            }
             {
               this.state.userHasEvent
               ? this.state.joinedEventCodes.map(event => (
