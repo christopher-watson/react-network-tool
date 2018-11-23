@@ -17,9 +17,11 @@ const User = new Schema({
   },
   phone: { 
     type: String, 
+    default: ''
   },
   twitter: { 
     type: String, 
+    default: ''
   },
   fb: { 
     type: String, 
