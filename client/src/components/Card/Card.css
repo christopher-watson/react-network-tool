@@ -5,6 +5,8 @@
 .card {
   display: inline-block;
   margin: 0 5px 10px 5px;
+  max-width: 80vw;
+  overflow: hidden;
 }
 
 .links {
