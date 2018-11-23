@@ -139,11 +139,13 @@ class Main extends Component {
       })
     setTimeout(() => {
       //if the user isnt already in this event, add them to event
-      if(this.state.joinedEvents.includes(functionEventId)){
-        console.log('user already joined this event')
-        console.log(this.state.joinedEvents)
-        console.log(functionEventId)
-        console.log(functionUserId)
+      if(this.state.joinedEvents){
+        if(this.state.joinedEvents.includes(functionEventId)){
+          console.log('user already joined this event')
+          console.log(this.state.joinedEvents)
+          console.log(functionEventId)
+          console.log(functionUserId)
+        }
       }
       else{
         console.log('user has not joined this event')

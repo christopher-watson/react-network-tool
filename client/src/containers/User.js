@@ -2,6 +2,16 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import API from "../utils/API";
 import Navbar from "../components/Navbar";
+import axios from 'axios';
+
+const styles = {
+  hideUploadText: {
+    visibility: 'hidden'
+  },
+  showUploadText: {
+    visibility: 'visible'
+  }
+}
 
 class User extends Component {
   state = {
@@ -12,8 +22,8 @@ class User extends Component {
     name: "",
     // photo: "",
     email: "",
-    phone: "",
-    twitter: "",
+    phone: "optional",
+    twitter: "optional",
     facebook: "",
     linkedin: "",
     github: "",
@@ -31,13 +41,18 @@ class User extends Component {
     facebookInvalid: false,
     linkedinInvalid: false,
     githubInvalid: false,
-    formInvalid: true
+    formInvalid: true,
+    selectedFile: null,
+    uploadStarted: false,
+    uploadCompleted: false,
+    uploadError: false
   }
 
   componentDidMount() {
     this.loginCheck();
     this.getPath();
     setTimeout(() => { this.getUserInfo() }, 800);
+    console.log(this.state)
   }
   // Check login status
   loginCheck = () => {
@@ -68,7 +83,7 @@ class User extends Component {
     API
       .updateUser( this.state.userId, {
         name: this.state.name,
-        photo: this.state.photo,
+        // photo: this.state.photo,
         email: this.state.email,
         phone: this.state.phone,
         twitter: this.state.twitter,
@@ -127,14 +142,14 @@ class User extends Component {
           console.log(res.data);
           if(res.data._events.length>0){
             this.setState({
-              userId: res.data._id,
-              name: res.data.name,
-              email: res.data.email,
-              phone: res.data.phone,
-              twitter: res.data.twitter,
-              fb: res.data.facebook,
-              link: res.data.linkedin,
-              git: res.data.github,
+              userId: res.data._id || '',
+              name: res.data.name || '',
+              email: res.data.email || '',
+              phone: res.data.phone || '',
+              twitter: res.data.twitter || '',
+              facebook: res.data.fb || '',
+              linkedin: res.data.link || '',
+              github: res.data.git || '',
               joinedEvents: [...res.data._events],
               userHasEvent: true
             })
@@ -142,14 +157,14 @@ class User extends Component {
           }
           else{
             this.setState({
-              userId: res.data._id,
-              name: res.data.name,
-              email: res.data.email,
-              phone: res.data.phone,
-              twitter: res.data.twitter,
-              fb: res.data.facebook,
-              link: res.data.linkedin,
-              git: res.data.github,
+              userId: res.data._id || '',
+              name: res.data.name || '',
+              email: res.data.email || '',
+              phone: res.data.phone || '',
+              twitter: res.data.twitter || '',
+              facebook: res.data.fb || '',
+              linkedin: res.data.link || '',
+              github: res.data.git || '',
             })
           }
         })
@@ -186,7 +201,7 @@ class User extends Component {
 
     switch(fieldName) {
       case 'name':
-        nameInvalid = value.match(/^\s*[a-zA-Z,\s]+\s*$/i);
+        nameInvalid = value.match(/^\s*[a-zA-Z,\s]+\s*$/i)
         if(!nameInvalid){
           this.setState({ nameInvalid: true })
         }
@@ -196,7 +211,7 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'email':
-        emailInvalid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        emailInvalid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)
         if(!emailInvalid){
           this.setState({ emailInvalid: true })
         }
@@ -206,7 +221,8 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'phone':
-        phoneInvalid = value.match(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/i);
+        // phoneInvalid = value.match('');
+        phoneInvalid = value.match(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/i)
         if(!phoneInvalid){
           this.setState({ phoneInvalid: true })
         }
@@ -226,7 +242,7 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'facebook':
-        facebookInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/);
+        facebookInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/)
         if(!facebookInvalid){
           this.setState({ facebookInvalid: true })
         }
@@ -236,7 +252,7 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'linkedin':
-        linkedinInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/);
+        linkedinInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/)
         if(!linkedinInvalid){
           this.setState({ linkedinInvalid: true })
         }
@@ -246,7 +262,7 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'github':
-        githubInvalid = value.match(/^[A-Za-z0-9_-]{1,20}$/);
+        githubInvalid = value.match(/^[A-Za-z0-9_-]{1,20}$/)
         if(!githubInvalid){
           this.setState({ githubInvalid: true })
         }
@@ -270,6 +286,67 @@ class User extends Component {
   //   }
   // }
 
+    // This function does the uploading to cloudinary
+  handleImportImage = event => {
+    console.log(event.target.files[0]);
+    this.setState({
+      selectedFile: event.target.files[0]
+    })
+    if(event.target.files[0]){
+      this.setState({
+        uploadStarted: true
+      })
+      setTimeout(() => {
+        this.handleUploadImage()
+      }, 2500);
+    }
+  }
+
+  handleUploadImage = () => {
+    console.log(this.state.selectedFile)
+    const formData = new FormData();
+    // formData.append("tags", ''); // Add tags for the images - {Array}
+    formData.append('upload_preset', 'yeym33c2'); // Replace the preset name with your own
+    formData.append('api_key', '955461444614476'); // Replace API key with your own Cloudinary API key
+    // formData.append("timestamp", (Date.now() / 1000) | 0);
+    formData.append('file', this.state.selectedFile);
+    console.log(...formData);
+    return axios.post( "https://api.cloudinary.com/v1_1/yowats0n/image/upload", formData, { 
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+      })
+      .then(response => {
+        console.log(response.data.url)
+        this.handleUpdateUserImage(response.data.url)
+        if(response.data.url){
+          this.setState({ uploadCompleted: true })
+          setTimeout(() => {
+            this.setState({ uploadStarted: false, uploadCompleted: false })
+          }, 2000);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        if(err){
+          this.setState({ uploadError: true })
+          setTimeout(() => {
+            this.setState({ uploadError: false })
+          }, 2000);
+        }
+      });
+  }
+
+  handleUpdateUserImage = image => {
+    API
+      .updateUser( this.state.userId, {
+        photo: image,
+      })
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  }
+
+
   render() {
     if (!this.state.isLoggedIn) {
       return <Redirect to="/"/>
@@ -286,6 +363,7 @@ class User extends Component {
         <Navbar />
         <div className="container my-3">
           <h3>Update Profile!</h3>
+          {/* <form onSubmit={this.updateUser}> */}
           <form>
             <div className="form-row">
               <div className="col-md-6 mb-3">
@@ -305,7 +383,7 @@ class User extends Component {
                 {this.state.nameInvalid ? 'Please enter a valid name' : ''}
               </small>
               </div>
-              {/* <div className="col-md-6 mb-3">
+              <div className="col-md-6 mb-3">
                 <label htmlFor="photo">Upload a Photo</label>
                 <div className="custom-file">
                   <input
@@ -313,12 +391,27 @@ class User extends Component {
                     className="custom-file-input"
                     id="photo"
                     name="photo"
-                    value={this.state.photo ? this.state.photo : ""} 
-                    onChange={this.handleInputChange}
+                    accept="image/png, image/jpeg"
+                    // onChange={(e) => console.log(e.target.files[0])}
+                    onChange={(e) => this.handleImportImage(e)}
+                    // value={this.state.photo ? this.state.photo : ""} 
+                    // onSubmit={() => this.uploadPhoto}
                   />
-                  <label className="custom-file-label" htmlFor="userPhoto">Choose file</label>
+                  {
+                    this.state.selectedFile
+                    ?
+                    <label className="custom-file-label" htmlFor="userPhoto">{this.state.selectedFile.name}</label>
+                    :
+                    <label className="custom-file-label" htmlFor="userPhoto">Choose file</label>
+                  }
                 </div>
-              </div> */}
+                <small id="photoUpload" className="form-text text-primary" style={this.state.uploadStarted ? styles.showUploadText : styles.hideUploadText}>
+                  {this.state.uploadCompleted ? 'Upload Completed!' : 'Uploading your photo..'}
+                </small>
+                <small id="photoError" className="form-text text-danger" style={this.state.uploadError ? styles.showUploadText : styles.hideUploadText}>
+                  {this.state.uploadError ? 'Upload Error! Please try again' : ''}
+                </small>
+              </div>
             </div>
             <div className="form-row">
               <div className="col-md-6 mb-3">
@@ -345,7 +438,7 @@ class User extends Component {
                   className="form-control"
                   id="phone"
                   name="phone"
-                  value={this.state.phone}
+                  value={this.state.phone || ''}
                   onChange={this.handleInputChange}
                   onBlur={() => this.validateField('phone', this.state.phone)} 
                   // placeholder="555-222-1337"

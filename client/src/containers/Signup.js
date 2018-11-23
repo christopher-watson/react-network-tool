@@ -89,7 +89,7 @@ class Signup extends Component {
 
     switch(fieldName) {
       case 'username':
-        usernameInvalid = value.match(/^[A-Za-z0-9_]{1,15}$/);
+        usernameInvalid = value.match(/^[A-Za-z0-9_]{5,}$/);
         if(!usernameInvalid){
           this.setState({ usernameInvalid: true })
         }
@@ -99,7 +99,7 @@ class Signup extends Component {
         // this.validateForm();
         break;
       case 'password':
-        passwordInvalid = value.match(/^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/);
+        passwordInvalid = value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()\-=+_])(?=.{7,})/);
         if(!passwordInvalid){
           this.setState({ passwordInvalid: true })
         }
