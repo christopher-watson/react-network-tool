@@ -58,14 +58,14 @@ class Main extends Component {
         eventCode += chars.substring(rnum, rnum + 1);
       }
       // creates event in db
-      this.setState({eventCode: eventCode});
+      this.setState({ eventCode: eventCode });
       API
         .createEvent({
           Code: eventCode
         })
-      this.setState({sendingToEvent: true})
+      this.setState({ sendingToEvent: true })
       setTimeout(() => { 
-        this.setState({goToEvent: true}) 
+        this.setState({ goToEvent: true }) 
       }, 2000);
     }
     if(!this.state.isLoggedIn){
@@ -146,9 +146,31 @@ class Main extends Component {
           console.log(functionEventId)
           console.log(functionUserId)
         }
+        else{
+          console.log('user has not joined this event')
+          console.log(this.state.joinedEvents)
+          console.log(functionEventId)
+          console.log(functionUserId)
+          //add user to event using CODE and userID
+          setTimeout(() => {
+            API
+            .addUserToEvent(this.state.codeInput, {
+              _id: functionUserId
+            })
+            .catch(err => { console.log(err) })
+          }, 800);
+          //add event to user using userID and eventID
+          setTimeout(() => {
+            API
+            .addEventToUser(functionUserId, {
+              _id: functionEventId
+            })
+          .catch(err => { console.log(err) })
+          }, 1000);
+        }
       }
       else{
-        console.log('user has not joined this event')
+        console.log('user has no events')
         console.log(this.state.joinedEvents)
         console.log(functionEventId)
         console.log(functionUserId)
@@ -201,6 +223,9 @@ class Main extends Component {
           }
           else{
             console.log('new user');
+            this.setState({
+              joinedEvents: []
+            })
           }
         })
         .catch(err => console.log(err));
@@ -254,7 +279,23 @@ class Main extends Component {
                   // placeholder="CODE"
                 />
               </div>
-              <button type="submit" className="btn btn-success" onClick={this.handleEventCodeSubmit}>GO</button>
+              {
+                this.state.sendingToEvent
+                ?
+                <button 
+                  type="submit" 
+                  className="btn btn-success disabled" 
+                  onClick={(e) => e.preventDefault()}
+                  >GO
+                </button>
+                :
+                <button 
+                  type="submit" 
+                  className="btn btn-success" 
+                  onClick={this.handleEventCodeSubmit}
+                  >GO
+                </button>
+              }
               {
                 this.state.isEventAvail
                 ? <span></span>
@@ -276,7 +317,7 @@ class Main extends Component {
             }
             {
               this.state.sendingToEvent
-              ? <span className="text-primary mt-5">Sending you to the event! .. <i class="fas fa-spinner fa-pulse"></i></span>
+              ? <span className="text-primary mt-5">Sending you to the event! .. <i className="fas fa-spinner fa-pulse"></i></span>
               : <span></span>
             }
           </div>
