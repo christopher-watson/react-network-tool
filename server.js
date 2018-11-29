@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const path = require("path");
 
 // Import routes
 const routes = require('./routes');
@@ -22,7 +23,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Static assets
-app.use(express.static('client/build'));
+// app.use(express.static('client/build'));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Add routes, both API and route to client/build
 app.use(routes);
