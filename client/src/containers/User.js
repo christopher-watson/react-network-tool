@@ -242,7 +242,7 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'facebook':
-        facebookInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/)
+        facebookInvalid = value.match(/^[A-Za-z0-9_.-]{1,30}$/)
         if(!facebookInvalid){
           this.setState({ facebookInvalid: true })
         }
@@ -252,7 +252,7 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'linkedin':
-        linkedinInvalid = value.match(/^[A-Za-z0-9_.-]{1,20}$/)
+        linkedinInvalid = value.match(/^[A-Za-z0-9_.-]{1,30}$/)
         if(!linkedinInvalid){
           this.setState({ linkedinInvalid: true })
         }
@@ -262,7 +262,7 @@ class User extends Component {
         // this.validateForm();
         break;
       case 'github':
-        githubInvalid = value.match(/^[A-Za-z0-9_-]{1,20}$/)
+        githubInvalid = value.match(/^[A-Za-z0-9_-]{1,30}$/)
         if(!githubInvalid){
           this.setState({ githubInvalid: true })
         }
